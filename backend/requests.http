@@ -1,0 +1,79 @@
+### PriceWise API — click "Send Request" above each block (REST Client extension).
+### Start the API first (VS Code task "Backend: run API" or: uvicorn app.main:app --reload).
+
+@baseUrl = http://localhost:8000
+
+### 1. Health — is it alive?
+GET {{baseUrl}}/health
+
+### 2. Readiness — DB + cache + catalog
+GET {{baseUrl}}/ready
+
+### 3. Parse a natural-language query
+POST {{baseUrl}}/api/parse
+Content-Type: application/json
+
+{ "query": "phone with great camera under 50000, good battery, not Apple, for photography" }
+
+### 4. Match products to a requirement
+POST {{baseUrl}}/api/match
+Content-Type: application/json
+
+{ "requirement": { "category": "smartphone", "budget_max": 70000, "priorities": ["camera"] }, "limit": 5 }
+
+### 5. Price check — fake-discount detection (note inflated iPhone MRP)
+POST {{baseUrl}}/api/price-check
+Content-Type: application/json
+
+{ "product_id": "iphone16pro", "urgency": "can_wait" }
+
+### 6. Review trust — fake-review detection
+POST {{baseUrl}}/api/review-check
+Content-Type: application/json
+
+{ "product_id": "s24ultra" }
+
+### 7. Chat — multi-agent orchestration (capture session_id for the next call)
+# @name chat1
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{ "query": "good camera phone under 70000 for photography" }
+
+### 8. Chat — RESUME the same session (uses session_id from the call above)
+POST {{baseUrl}}/api/chat
+Content-Type: application/json
+
+{ "query": "what about battery life?", "session_id": "{{chat1.response.body.session_id}}" }
+
+### 9. Discover — live data provider (mock by default)
+POST {{baseUrl}}/api/discover
+Content-Type: application/json
+
+{ "query": "oneplus", "category": "smartphone", "limit": 5 }
+
+###############################################################
+### AUTH FLOW — register, then use the token for alerts
+###############################################################
+
+### 10. Register (captures access_token)
+# @name register
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "you@example.com", "password": "supersecret1", "full_name": "Test User" }
+
+### 11. Who am I? (uses captured token)
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{register.response.body.access_token}}
+
+### 12. Create a price-drop alert (UC-08)
+POST {{baseUrl}}/api/alerts
+Authorization: Bearer {{register.response.body.access_token}}
+Content-Type: application/json
+
+{ "product_id": "iphone16pro", "product_name": "iPhone 16 Pro", "target_price": 115000 }
+
+### 13. List my alerts
+GET {{baseUrl}}/api/alerts
+Authorization: Bearer {{register.response.body.access_token}}

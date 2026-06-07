@@ -1,0 +1,31 @@
+{
+  "// note": "Points Python at the backend venv created by the 'Backend: setup' task.",
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["backend"],
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
+  "python.envFile": "${workspaceFolder}/backend/.env",
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/*.pyc": true,
+    "**/.next": true,
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.venv": true
+  },
+
+  "[python]": { "editor.formatOnSave": true, "editor.defaultFormatter": "charliermarsh.ruff" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  "rest-client.environmentVariables": {
+    "$shared": { "baseUrl": "http://localhost:8000" }
+  }
+}

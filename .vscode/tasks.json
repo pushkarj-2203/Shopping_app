@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: setup (venv + deps)",
+      "type": "shell",
+      "command": "python -m venv .venv && .venv/Scripts/python -m pip install --upgrade pip && .venv/Scripts/pip install -r requirements.txt",
+      "windows": {
+        "command": "python -m venv .venv; .venv\\Scripts\\python -m pip install --upgrade pip; .venv\\Scripts\\pip install -r requirements.txt"
+      },
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: run API",
+      "type": "shell",
+      "command": ".venv/Scripts/python -m uvicorn app.main:app --reload --port 8000",
+      "windows": { "command": ".venv\\Scripts\\python -m uvicorn app.main:app --reload --port 8000" },
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: run tests",
+      "type": "shell",
+      "command": ".venv/Scripts/python -m pytest -v",
+      "windows": { "command": ".venv\\Scripts\\python -m pytest -v" },
+      "options": {
+        "cwd": "${workspaceFolder}/backend",
+        "env": { "DATABASE_URL": "sqlite+aiosqlite:///:memory:", "LLM_PROVIDER": "none" }
+      },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: db migrate (alembic upgrade head)",
+      "type": "shell",
+      "command": ".venv/Scripts/python -m alembic upgrade head",
+      "windows": { "command": ".venv\\Scripts\\python -m alembic upgrade head" },
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: install",
+      "type": "shell",
+      "command": "npm install",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: up (full stack)",
+      "type": "shell",
+      "command": "docker compose up --build",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}
